@@ -4,12 +4,9 @@ module FFI
   module Hunspell
     extend FFI::Library
 
-    ffi_lib [
-      'hunspell-1.4', 'libhunspell-1.4.so.0',
-      'hunspell-1.3', 'libhunspell-1.3.so.0',
-      'hunspell-1.2', 'libhunspell-1.2.so.0'
-    ]
+    lib_locations = ["/usr/{local/,}lib/*libhunspell*.dylib", "/usr/local/Cellar/hunspell/**/*.dylib"]
 
+    ffi_lib Dir[*lib_locations].sort.reverse
 
     attach_function :Hunspell_create, [:string, :string], :pointer
     attach_function :Hunspell_create_key, [:string, :string, :string], :pointer
