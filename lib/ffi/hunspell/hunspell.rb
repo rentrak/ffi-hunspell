@@ -6,7 +6,15 @@ module FFI
 
     lib_locations = ["/usr/{local/,}lib/*libhunspell*.dylib", "/usr/local/Cellar/hunspell/**/*.dylib"]
 
-    ffi_lib Dir[*lib_locations].sort.reverse
+    fallback_args = [
+      'hunspell-1.4', 'libhunspell-1.4.so.0',
+      'hunspell-1.3', 'libhunspell-1.3.so.0',
+      'hunspell-1.2', 'libhunspell-1.2.so.0'
+    ]
+
+    discovered_libs = Dir[*lib_locations].sort.reverse
+
+    ffi_lib(discovered_libs.empty? ? fallback_args : discovered_libs)
 
     attach_function :Hunspell_create, [:string, :string], :pointer
     attach_function :Hunspell_create_key, [:string, :string, :string], :pointer
